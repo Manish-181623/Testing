@@ -47,10 +47,12 @@ jobs:
         chmod 600 ~/.ssh/id_rsa
         ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
   
-    - name: Deploy application
+    - name: Test SSH
       run: |
         ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-            cd ${{ secrets.WORKDIR }}
             echo "Successfully entered into server"
-            
-          EOF
+            exit    
+        EOF
+    - name: Deploy to server
+      run: |
+        rsync -avzhe "ssh -o StrictHostKeyChecking=no" production-files/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.WORKDIR }}
