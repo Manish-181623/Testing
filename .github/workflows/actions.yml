@@ -29,7 +29,11 @@ jobs:
       with:
         name: production-files
         path: dist/ # Adjust if your build output directory is different
-
+    - name: Download build artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: production-files
+        path: ./dist
     - name: Create SSH key
       run: |
         mkdir -p ~/.ssh
@@ -46,3 +50,4 @@ jobs:
     - name: Deploy to server
       run: |
         rsync -avzhe "ssh -o StrictHostKeyChecking=no" dist/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.WORKDIR }}
+   
