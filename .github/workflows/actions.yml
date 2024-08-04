@@ -50,7 +50,6 @@ jobs:
         ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
     - name: Deploy
       run: |
-        rsync -avzhe "ssh -o StrictHostKeyChecking=no" dist/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-          cd ${{ secrets.WORKDIR }}
+        rsync -avzhe "ssh -o StrictHostKeyChecking=no" dist/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{secrets.WORKDIR}} << 'EOF'
           echo "Successfully entered into server and deployed"
         EOF
