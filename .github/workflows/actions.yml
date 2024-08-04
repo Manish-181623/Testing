@@ -40,16 +40,17 @@ jobs:
       with:
         name: production-files
 
-    - name: Setup SSH
+    - name: Create SSH key
       run: |
         mkdir -p ~/.ssh
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
         ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
-    - name: Test SSH Connection
+  
+    - name: Deploy application
       run: |
-        ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "echo 'SSH connection successful!'"
-
-    - name: Deploy
-      run: |
-        rsync -avzhe "ssh -o StrictHostKeyChecking=no" production-files/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.WORKDIR }}
+        ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            cd ${{ secrets.WORKDIR }}
+            echo "Successfully entered into server"
+            
+          EOF
