@@ -53,4 +53,4 @@ jobs:
         echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
         ssh-keyscan $SERVER_HOST >> ~/.ssh/known_hosts
-        rsync -avzhe ssh build/ $SERVER_USER@$SERVER_HOST:$WORKDIR
+        rsync -avzhe ssh dist/ $SERVER_USER@$SERVER_HOST:$WORKDIR
