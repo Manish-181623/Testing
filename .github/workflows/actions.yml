@@ -30,16 +30,6 @@ jobs:
         name: production-files
         path: dist/ # Adjust if your build output directory is different
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Download build artifact
-      uses: actions/download-artifact@v3
-      with:
-        name: production-files
-
     - name: Create SSH key
       run: |
         mkdir -p ~/.ssh
@@ -55,4 +45,4 @@ jobs:
         EOF
     - name: Deploy to server
       run: |
-        rsync -avzhe "ssh -o StrictHostKeyChecking=no" ./production-files/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.WORKDIR }}
+        rsync -avzhe "ssh -o StrictHostKeyChecking=no" dist/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.WORKDIR }}
