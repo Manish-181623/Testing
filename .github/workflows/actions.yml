@@ -42,15 +42,15 @@ jobs:
         name: production-files
         path: dist/
 
-    - name: Deploy to server
-      env:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        SERVER_USER: ${{ secrets.SERVER_USER }}
-        SERVER_HOST: ${{ secrets.SERVER_HOST }}
-        WORKDIR: ${{ secrets.WORKDIR }}
+    - name: Setup SSH 
       run: |
         mkdir -p ~/.ssh
-        echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan $SERVER_HOST >> ~/.ssh/known_hosts
-        rsync -avzhe ssh dist/ $SERVER_USER@$SERVER_HOST:$WORKDIR
+        ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+    - name: Deploy
+      run: |
+        rsync -avzhe ssh dist/ -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+          cd ${{ secrets.WORKDIR }}
+          echo "Successfully entered into server and deployed"
+        EOF
