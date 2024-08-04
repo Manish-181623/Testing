@@ -21,7 +21,6 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-
     - name: Build project
       run: npm run build
 
@@ -40,16 +39,14 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         name: production-files
-        path: dist/
 
-    - name: Setup SSH 
+    - name: Setup SSH
       run: |
         mkdir -p ~/.ssh
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
         ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
     - name: Deploy
       run: |
-        rsync -avzhe "ssh -o StrictHostKeyChecking=no" dist/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{secrets.WORKDIR}} << 'EOF'
-          echo "Successfully entered into server and deployed"
-        EOF
+        rsync -avzhe "ssh -o StrictHostKeyChecking=no" production-files/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.WORKDIR }}
