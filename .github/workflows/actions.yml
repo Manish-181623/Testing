@@ -55,4 +55,4 @@ jobs:
         EOF
     - name: Deploy to server
       run: |
-        rsync -avzhe "ssh -o StrictHostKeyChecking=no" production-files/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.WORKDIR }}
+        rsync -avzhe "ssh -o StrictHostKeyChecking=no" ./production-files/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.WORKDIR }}
