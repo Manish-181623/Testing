@@ -27,10 +27,16 @@ jobs:
             echo "Successfully entered into server"
             exit    
         EOF
-    - name: Connect and pull
+    - name: Connect and update repository
       run: |
-        ssh -o StrictHostKeyChecking=no ${{secrets.SSH_USER}}@${{secrets.SSH_HOST}} << EOF
-          cd ${{secrets.WORKDIR}}
+        ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+          cd ${{ secrets.WORKDIR }}
+          if [ ! -d .git ]; then
+            git init
+            git remote add origin https://github.com/Manish-181623/Testing.git
+            git fetch
+          fi
+          git reset --hard origin/master
           git pull origin master
         EOF
 
