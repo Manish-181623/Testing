@@ -31,7 +31,7 @@ jobs:
       run: |
         ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
           cd ${{ secrets.WORKDIR }}
-          
+          cd Testing
           # if [ ! -d .git ]; then
           #   git init
           #   git remote add origin https://github.com/Manish-181623/Testing.git
